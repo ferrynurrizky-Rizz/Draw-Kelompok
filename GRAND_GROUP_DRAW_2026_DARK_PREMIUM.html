@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grand Group Draw — Year End 2026</title>
+<style>
+:root {
+  --bg:#02030a;
+  --panel:rgba(10,13,25,.86);
+  --panel2:rgba(15,19,35,.94);
+  --line:rgba(255,255,255,.075);
+  --text:#f7f8ff;
+  --muted:#a7aec4;
+  --gold:#d9a84e;
+  --gold2:#ffe9a8;
+  --accent:#756cff;
+  --green:#58e0a3;
+  --danger:#ff7b8b;
+  --shadow:0 30px 100px rgba(0,0,0,.62);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif}
+body{
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(139,124,255,.18), transparent 38%),
+    radial-gradient(circle at 10% 30%, rgba(245,199,106,.08), transparent 28%),
+    linear-gradient(180deg,#080a13 0%,#060811 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,black,transparent 90%);
+}
+button{font:inherit}
+.app{width:min(1500px,100%);margin:auto;padding:26px clamp(16px,3vw,42px) 50px;position:relative}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.brand small{display:block;color:var(--gold);font-weight:800;letter-spacing:.28em;font-size:11px}
+.brand h1{margin:4px 0 0;font-size:clamp(24px,3vw,38px);letter-spacing:.03em}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.btn{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));color:var(--text);border-radius:12px;padding:11px 15px;font-weight:750;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.09)}
+.btn.primary{border-color:rgba(245,199,106,.4);background:linear-gradient(135deg,#a8792d 0%,#e0b75d 45%,#fff0b0 100%);color:#17120a;box-shadow:0 10px 30px rgba(245,199,106,.18)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.7fr);gap:18px}
+.stage,.side{border:1px solid var(--line);background:radial-gradient(circle at 50% 30%,rgba(42,35,72,.24),transparent 38%),linear-gradient(145deg,rgba(13,16,30,.96),rgba(4,6,13,.98));box-shadow:var(--shadow);border-radius:24px}
+.stage{min-height:620px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:35px;position:relative;overflow:hidden}
+.stage::before{content:"";position:absolute;width:560px;height:560px;border-radius:50%;border:1px solid rgba(245,199,106,.10);box-shadow:0 0 120px rgba(139,124,255,.12) inset;top:50%;left:50%;transform:translate(-50%,-50%)}
+.stage::after{content:"";position:absolute;width:430px;height:430px;border-radius:50%;border:1px dashed rgba(245,199,106,.09);top:50%;left:50%;transform:translate(-50%,-50%);animation:spin 24s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.stage>*{position:relative;z-index:2}
+.kicker{color:var(--muted);font-size:12px;letter-spacing:.24em;font-weight:800}
+.status{height:32px;margin-top:10px;color:var(--gold);font-size:14px;font-weight:800;letter-spacing:.08em}
+.name-wrap{width:min(900px,100%);min-height:150px;display:flex;align-items:center;justify-content:center;padding:10px 20px}
+.name{font-size:clamp(32px,5vw,72px);line-height:1.04;font-weight:900;letter-spacing:-.03em;max-width:100%;overflow-wrap:anywhere;text-wrap:balance}
+.rolling{animation:roll .08s linear infinite alternate}
+@keyframes roll{from{transform:translateY(-2px);opacity:.55}to{transform:translateY(2px);opacity:1}}
+.reveal{animation:reveal .55s cubic-bezier(.2,.9,.2,1)}
+@keyframes reveal{0%{transform:scale(.82);opacity:0;filter:blur(8px)}100%{transform:scale(1);opacity:1;filter:blur(0)}}
+.group-reveal{font-size:clamp(42px,7vw,92px);line-height:1;font-weight:1000;color:var(--gold2);text-shadow:0 0 40px rgba(245,199,106,.28);min-height:100px;display:flex;align-items:center}
+.meta{min-height:26px;color:var(--muted);font-size:13px}
+.controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.draw-btn{min-width:230px;padding:16px 24px;border-radius:15px;border:1px solid rgba(245,199,106,.5);background:linear-gradient(135deg,#9d7028 0%,#d9aa4f 42%,#fff0ad 100%);color:#181208;font-size:17px;font-weight:900;cursor:pointer;box-shadow:0 16px 42px rgba(245,199,106,.16)}
+.draw-btn:disabled{opacity:.5;cursor:not-allowed}
+.side{padding:22px}
+.side-title{display:flex;justify-content:space-between;align-items:end;margin-bottom:16px}
+.side-title h2{margin:0;font-size:18px}
+.side-title span{color:var(--muted);font-size:12px}
+.progress{height:9px;border-radius:99px;background:#0b0e19;overflow:hidden;border:1px solid var(--line);margin-bottom:18px}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6258e8,var(--gold),#ffe8a1);transition:.35s}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.stat{padding:12px 8px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));border-radius:13px;text-align:center}
+.stat b{display:block;font-size:25px}
+.stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}
+.group-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gmini{padding:12px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:12px;min-height:74px}
+.gmini .head{display:flex;justify-content:space-between;gap:5px;font-size:12px;font-weight:800}
+.gmini .count{color:var(--gold)}
+.gmini .bar{height:5px;background:#0b0e19;border-radius:99px;margin-top:10px;overflow:hidden}
+.gmini .bar i{display:block;height:100%;width:0;background:var(--gold);transition:.3s}
+.results{margin-top:18px}
+.results-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.results-head h2{margin:0;font-size:20px}
+.results-head span{color:var(--muted);font-size:12px}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(16,20,36,.92),rgba(8,10,20,.92));border-radius:18px;padding:15px;min-height:190px}
+.card:nth-child(n+5){grid-column:span 1}
+.card-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px}
+.card-head strong{font-size:14px}
+.badge{color:var(--gold);font-size:11px;font-weight:800}
+.people{display:flex;flex-direction:column;gap:5px}
+.person{font-size:12px;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.045);color:#dfe3ef;overflow-wrap:anywhere}
+.person.new{animation:personIn .45s ease}
+@keyframes personIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.done .stage{border-color:rgba(94,230,168,.28)}
+.done .group-reveal{color:var(--green);text-shadow:0 0 40px rgba(94,230,168,.2)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti i{position:absolute;width:8px;height:14px;top:-20px;animation:fall 2.6s linear forwards;opacity:.9}
+@keyframes fall{to{transform:translate3d(var(--x),110vh,0) rotate(720deg);opacity:0}}
+.hint{margin-top:14px;color:#cbd1df;font-size:12px;min-height:18px}
+.footer-note{text-align:center;color:#707991;font-size:11px;margin-top:22px}
+@media(max-width:1050px){.hero{grid-template-columns:1fr}.stage{min-height:560px}.board{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.app{padding:16px 10px 35px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:flex-start}.stage{min-height:530px;padding:24px 12px;border-radius:18px}.stage::before{width:360px;height:360px}.stage::after{width:290px;height:290px}.side{padding:16px}.board{grid-template-columns:1fr}.name-wrap{min-height:125px;padding:8px}.group-mini{grid-template-columns:1fr 1fr}.btn,.draw-btn{width:100%}.controls{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* PREMIUM VISUAL LAYER — draw logic intentionally untouched */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(117,108,255,.065),transparent 30%),
+    radial-gradient(circle at 85% 80%,rgba(217,168,78,.045),transparent 24%);
+}
+.app{z-index:1}
+.stage,.side,.card{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.stage{box-shadow:0 35px 120px rgba(0,0,0,.68),0 0 0 1px rgba(255,255,255,.025) inset}
+.stage::before{box-shadow:0 0 160px rgba(117,108,255,.13) inset,0 0 90px rgba(217,168,78,.035)}
+.brand h1{background:linear-gradient(90deg,#fff,#ffe6a1);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kicker{color:#8f97ad}
+.name{text-shadow:0 8px 40px rgba(0,0,0,.45)}
+.group-reveal{filter:drop-shadow(0 0 22px rgba(217,168,78,.12))}
+.card{box-shadow:0 16px 45px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.025)}
+.gmini{box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.person{border:1px solid rgba(255,255,255,.035)}
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="brand">
+      <small>YEAR END CELEBRATION • 2026</small>
+      <h1>GRAND GROUP DRAW</h1>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="fullBtn">⛶ Fullscreen</button>
+      <button class="btn" id="resetBtn">↻ Reset</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="stage" id="stage">
+      <div class="kicker">THE NEXT PARTICIPANT IS</div>
+      <div class="status" id="status">READY</div>
+      <div class="name-wrap"><div class="name" id="name">SIAP UNTUK DIUNDI</div></div>
+      <div class="group-reveal" id="group">—</div>
+      <div class="meta" id="meta">68 peserta • 7 kelompok • pembagian otomatis seimbang</div>
+      <div class="hint" id="hint">Tekan tombol di bawah untuk memulai undian.</div>
+      <div class="controls">
+        <button class="draw-btn" id="drawBtn">🎲 MULAI UNDIAN</button>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="side-title">
+        <h2>LIVE PROGRESS</h2>
+        <span id="progressText">0 / 68</span>
+      </div>
+      <div class="progress"><i id="progressBar"></i></div>
+      <div class="stat-grid">
+        <div class="stat"><b id="remaining">68</b><span>Belum</span></div>
+        <div class="stat"><b id="drawn">0</b><span>Sudah</span></div>
+        <div class="stat"><b>7</b><span>Group</span></div>
+      </div>
+      <div class="group-mini" id="groupMini"></div>
+    </aside>
+  </section>
+
+  <section class="results">
+    <div class="results-head">
+      <h2>GROUP BOARD</h2>
+      <span>Hasil muncul otomatis setelah setiap undian</span>
+    </div>
+    <div class="board" id="board"></div>
+  </section>
+
+  <div class="footer-note">Data peserta diambil dari sheet “List Peserta” • 68 peserta • Group 01–07</div>
+</div>
+<div class="confetti" id="confetti"></div>
+
+<script>
+const participants = [{"id":1,"name":"NEVYRA AYUNI BIKHAIRI"},{"id":2,"name":"GEEBYLLA RAGGY"},{"id":3,"name":"ARIEF AFFANDI"},{"id":4,"name":"ERICK SUSANTO"},{"id":5,"name":"FREDDY FRANZ"},{"id":6,"name":"KENNY MANUEL"},{"id":7,"name":"FLORENCIA WIDYASTRI"},{"id":8,"name":"ARISTA KRESNAJATI SURWIYANTA"},{"id":9,"name":"HESTI PUTRI KEN RISTRI"},{"id":10,"name":"REBEKA SAPUTRI"},{"id":11,"name":"AHMAD FERRY NUR RIZKI"},{"id":12,"name":"ANGGIT CAHYO PERMONO"},{"id":13,"name":"HANA SUKMA ANDERA"},{"id":14,"name":"KRISNA SETIAWAN"},{"id":15,"name":"LUSI WAHYUNI"},{"id":16,"name":"MANDRA BHAWAWIGUNA"},{"id":17,"name":"MIA FEBRIYANI"},{"id":18,"name":"BRIANTO WIJAYA"},{"id":19,"name":"SHAFIRNA UTAMI"},{"id":39,"name":"OCKY DWI ADITYA"},{"id":40,"name":"MUALINADYA PARAMITA"},{"id":41,"name":"IRMA YUDHA ARIANDINI"},{"id":42,"name":"RIDWAH BAIHAKI ANANDAR"},{"id":43,"name":"ANNISA AVRILIYANTI"},{"id":44,"name":"MUHAMMAD GHOZI AL FATIH"},{"id":45,"name":"ANISA FAUZIAH (Adm TWC)"},{"id":46,"name":"SONYA MAVI OLA"},{"id":21,"name":"MUHAMMAD SUDI ANGGORO SAPUTRO"},{"id":23,"name":"SUHERMAN"},{"id":24,"name":"MULYADI"},{"id":25,"name":"ARI MAULANA"},{"id":26,"name":"ABDUL AZIS"},{"id":20,"name":"WIDI WILLIAM"},{"id":22,"name":"DEDEH KURNIASIH"},{"id":27,"name":"BELLA PRAMESWARI PUTRI DJAELANI"},{"id":33,"name":"MOH NASRULLAH ZAKARIA"},{"id":34,"name":"GATOT SUPRIYADI"},{"id":35,"name":"HASTO CAHYO PRASETYO"},{"id":36,"name":"RESSA RIZKY RAMDHANI"},{"id":37,"name":"MUHAMMAD MAHFUD"},{"id":38,"name":"MISTIKA OKTAVIANI"},{"id":28,"name":"TAZKIA NADIA"},{"id":29,"name":"MUHAMMAD RIDHWAN RIADY"},{"id":30,"name":"PUTERA SEMITOA DASALAM BARDHANY"},{"id":31,"name":"ALIFIA BAHAR"},{"id":32,"name":"JESSICA ALVINA MULIAWAN"},{"id":47,"name":"RICHY DANIEL PANGARIBUAN"},{"id":48,"name":"SIGIT WAHYUDIYANTO"},{"id":49,"name":"WILDAN FAHMI"},{"id":50,"name":"HANS LEONARDO"},{"id":51,"name":"PANDU RADIAN RAFIUDIN"},{"id":52,"name":"FAJRI ZULKARNAINI"},{"id":53,"name":"VINKA ZAIN"},{"id":54,"name":"ANGGITA MURDIANINGSIH"},{"id":55,"name":"YENI CHAERUNISAH"},{"id":56,"name":"ALVIRA SAFITRI"},{"id":57,"name":"REYNOVASI"},{"id":58,"name":"EKO PRASTIYO"},{"id":59,"name":"NUR USWATUN HASANAH"},{"id":60,"name":"KEZIA ROSANA"},{"id":61,"name":"DITA WULANDARI"},{"id":62,"name":"RAYHAN SHUHADA"},{"id":63,"name":"LUSIYANTI"},{"id":64,"name":"ADE AYU SARI"},{"id":65,"name":"BEBY REGILYA SAFITRI"},{"id":66,"name":"ANTONIA DEVANI CHRISTIANA ANGELI"},{"id":67,"name":"ANNA PUSPITASARI"},{"id":68,"name":"SAFIRA NURVIANI"}];
+const GROUPS = 7;
+const TOTAL = participants.length;
+
+const $ = id => document.getElementById(id);
+let available = [];
+let assigned = [];
+let counts = Array(GROUPS).fill(0);
+let busy = false;
+
+function targetSize(group) {
+  const base = Math.floor(TOTAL / GROUPS);
+  const extra = TOTAL % GROUPS;
+  return base + (group <= extra ? 1 : 0);
+}
+
+function reset() {
+  available = [...participants];
+  assigned = [];
+  counts = Array(GROUPS).fill(0);
+  busy = false;
+  document.body.classList.remove("done");
+  $("name").textContent = "SIAP UNTUK DIUNDI";
+  $("group").textContent = "—";
+  $("status").textContent = "READY";
+  $("meta").textContent = `${TOTAL} peserta • 7 kelompok • pembagian otomatis seimbang`;
+  $("hint").textContent = "Tekan tombol di bawah untuk memulai undian.";
+  render();
+}
+
+function pickGroup() {
+  const open = [];
+  for (let g = 1; g <= GROUPS; g++) {
+    if (counts[g - 1] < targetSize(g)) open.push(g);
+  }
+  return open[Math.floor(Math.random() * open.length)];
+}
+
+function render() {
+  $("remaining").textContent = available.length;
+  $("drawn").textContent = assigned.length;
+  $("progressText").textContent = `${assigned.length} / ${TOTAL}`;
+  $("progressBar").style.width = `${assigned.length / TOTAL * 100}%`;
+  $("drawBtn").disabled = busy || available.length === 0;
+  $("drawBtn").textContent = available.length ? "🎲 MULAI UNDIAN" : "✓ SEMUA PESERTA SELESAI";
+
+  const mini = $("groupMini");
+  mini.innerHTML = "";
+  for (let g = 1; g <= GROUPS; g++) {
+    const current = counts[g - 1], target = targetSize(g);
+    const el = document.createElement("div");
+    el.className = "gmini";
+    el.innerHTML = `
+      <div class="head"><span>GROUP ${String(g).padStart(2,"0")}</span><span class="count">${current}/${target}</span></div>
+      <div class="bar"><i style="width:${current/target*100}%"></i></div>`;
+    mini.appendChild(el);
+  }
+
+  const board = $("board");
+  board.innerHTML = "";
+  for (let g = 1; g <= GROUPS; g++) {
+    const list = assigned.filter(x => x.group === g);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-head">
+        <strong>GROUP ${String(g).padStart(2,"0")}</strong>
+        <span class="badge">${list.length} / ${targetSize(g)} ORANG</span>
+      </div>`;
+    const people = document.createElement("div");
+    people.className = "people";
+    list.forEach(x => {
+      const p = document.createElement("div");
+      p.className = "person";
+      p.textContent = `${String(x.id).padStart(2,"0")} • ${x.name}`;
+      people.appendChild(p);
+    });
+    card.appendChild(people);
+    board.appendChild(card);
+  }
+}
+
+function confetti() {
+  const box = $("confetti");
+  box.innerHTML = "";
+  for (let i = 0; i < 70; i++) {
+    const p = document.createElement("i");
+    p.style.left = (40 + Math.random() * 20) + "vw";
+    p.style.setProperty("--x", ((Math.random() - .5) * 100) + "vw");
+    p.style.animationDelay = (Math.random() * .35) + "s";
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    p.style.background = ["#f5c76a","#8b7cff","#5ee6a8","#ff7b8b","#ffffff"][Math.floor(Math.random()*5)];
+    box.appendChild(p);
+  }
+  setTimeout(() => box.innerHTML = "", 3200);
+}
+
+function draw() {
+  if (busy || !available.length) return;
+  busy = true;
+  $("drawBtn").disabled = true;
+  $("status").textContent = "DRAWING...";
+  $("group").textContent = "???";
+  $("hint").textContent = "Menentukan peserta dan kelompok...";
+  $("name").classList.add("rolling");
+
+  const start = performance.now();
+  const timer = setInterval(() => {
+    const temp = available[Math.floor(Math.random() * available.length)];
+    $("name").textContent = temp.name;
+    if (performance.now() - start >= 1450) {
+      clearInterval(timer);
+
+      const idx = Math.floor(Math.random() * available.length);
+      const person = available.splice(idx, 1)[0];
+      const group = pickGroup();
+
+      counts[group - 1]++;
+      assigned.push({...person, group});
+
+      $("name").classList.remove("rolling");
+      $("name").classList.add("reveal");
+      $("name").textContent = person.name;
+      $("group").classList.add("reveal");
+      $("group").textContent = `GROUP ${String(group).padStart(2,"0")}`;
+      $("status").textContent = "CONGRATULATIONS";
+      $("meta").textContent = `Peserta #${person.id} • ${assigned.length} dari ${TOTAL}`;
+      $("hint").textContent = `Selamat! ${person.name} masuk ke Group ${String(group).padStart(2,"0")}.`;
+      confetti();
+
+      setTimeout(() => {
+        $("name").classList.remove("reveal");
+        $("group").classList.remove("reveal");
+      }, 650);
+
+      busy = false;
+      render();
+
+      if (!available.length) {
+        document.body.classList.add("done");
+        $("status").textContent = "DRAW COMPLETE";
+        $("hint").textContent = "Semua 68 peserta sudah mendapatkan kelompok.";
+      }
+    }
+  }, 85);
+}
+
+$("drawBtn").addEventListener("click", draw);
+$("resetBtn").addEventListener("click", () => {
+  if (!busy && confirm("Reset semua hasil undian dan mulai dari awal?")) reset();
+});
+$("fullBtn").addEventListener("click", async () => {
+  try {
+    if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  } catch(e) {}
+});
+document.addEventListener("keydown", e => {
+  if (e.code === "Space" && !["INPUT","TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    draw();
+  }
+});
+reset();
+</script>
+</body>
+</html>
