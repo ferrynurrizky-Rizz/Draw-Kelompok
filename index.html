@@ -126,6 +126,88 @@ body::after{
 .gmini{box-shadow:inset 0 1px rgba(255,255,255,.025)}
 .person{border:1px solid rgba(255,255,255,.035)}
 
+
+
+/* FULLSCREEN PRESENTATION MODE — layout only, draw logic untouched */
+:fullscreen body,
+html:fullscreen body{overflow:hidden}
+html:fullscreen .app{
+  width:100%;
+  height:100vh;
+  max-width:none;
+  padding:14px 24px 12px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+html:fullscreen .topbar{margin-bottom:10px;min-height:48px}
+html:fullscreen .brand small{font-size:9px;letter-spacing:.24em}
+html:fullscreen .brand h1{font-size:28px;margin-top:2px}
+html:fullscreen .btn{padding:8px 12px;border-radius:10px;font-size:12px}
+html:fullscreen .hero{
+  flex:1 1 auto;
+  min-height:0;
+  grid-template-columns:minmax(0,2.05fr) minmax(300px,.78fr);
+  gap:12px;
+}
+html:fullscreen .stage,
+html:fullscreen .side{min-height:0;height:100%;border-radius:18px}
+html:fullscreen .stage{padding:18px 24px}
+html:fullscreen .stage::before{width:min(54vh,520px);height:min(54vh,520px)}
+html:fullscreen .stage::after{width:min(42vh,410px);height:min(42vh,410px)}
+html:fullscreen .kicker{font-size:10px}
+html:fullscreen .status{height:24px;margin-top:5px;font-size:12px}
+html:fullscreen .name-wrap{min-height:0;flex:0 1 auto;width:min(900px,100%);padding:4px 12px}
+html:fullscreen .name{font-size:clamp(38px,5.1vw,76px);line-height:.98}
+html:fullscreen .group-reveal{font-size:clamp(40px,5.8vw,82px);min-height:64px}
+html:fullscreen .meta{font-size:11px;min-height:20px}
+html:fullscreen .hint{margin-top:7px;font-size:11px;min-height:16px}
+html:fullscreen .controls{margin-top:12px}
+html:fullscreen .draw-btn{min-width:220px;padding:13px 20px;font-size:15px}
+html:fullscreen .side{padding:16px}
+html:fullscreen .side-title{margin-bottom:9px}
+html:fullscreen .side-title h2{font-size:15px}
+html:fullscreen .side-title span{font-size:10px}
+html:fullscreen .progress{height:7px;margin-bottom:10px}
+html:fullscreen .stat-grid{gap:6px;margin-bottom:10px}
+html:fullscreen .stat{padding:8px 5px;border-radius:10px}
+html:fullscreen .stat b{font-size:21px}
+html:fullscreen .stat span{font-size:8px}
+html:fullscreen .group-mini{gap:6px}
+html:fullscreen .gmini{padding:8px;min-height:54px;border-radius:9px}
+html:fullscreen .gmini .head{font-size:10px}
+html:fullscreen .gmini .bar{height:4px;margin-top:7px}
+html:fullscreen .results{margin-top:10px;flex:0 0 25vh;min-height:0;display:flex;flex-direction:column}
+html:fullscreen .results-head{margin-bottom:7px}
+html:fullscreen .results-head h2{font-size:16px}
+html:fullscreen .results-head span{font-size:10px}
+html:fullscreen .board{flex:1;min-height:0;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}
+html:fullscreen .card{min-height:0;height:100%;padding:9px;border-radius:12px;overflow:hidden}
+html:fullscreen .card-head{padding-bottom:6px;margin-bottom:6px}
+html:fullscreen .card-head strong{font-size:10px}
+html:fullscreen .badge{font-size:8px}
+html:fullscreen .people{display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:3px}
+html:fullscreen .person{font-size:8px;line-height:1.12;padding:4px 4px;border-radius:5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+html:fullscreen .footer-note{display:none}
+
+/* Wide but short displays: keep the presentation on one screen */
+@media (min-width:1051px) and (max-height:800px){
+  .app{padding-top:14px;padding-bottom:18px}
+  .topbar{margin-bottom:10px}
+  .brand h1{font-size:30px}
+  .hero{gap:12px}
+  .stage{min-height:500px;padding:24px}
+  .side{padding:16px}
+  .results{margin-top:10px}
+  .card{min-height:160px;padding:11px}
+  .person{font-size:10px;padding:5px 6px}
+}
+
+@media (max-width:1100px){
+  html:fullscreen .board{grid-template-columns:repeat(4,minmax(0,1fr))}
+  html:fullscreen .results{flex-basis:30vh}
+}
+
 </style>
 </head>
 <body>
