@@ -204,9 +204,49 @@ html:fullscreen .footer-note{display:none}
 }
 
 @media (max-width:1100px){
-  html:fullscreen .board{grid-template-columns:repeat(4,minmax(0,1fr))}
-  html:fullscreen .results{flex-basis:30vh}
+  html:fullscreen .board{grid-template-columns:repeat(4,1fr)}
+html:fullscreen .results{flex-basis:30vh}
 }
+
+/* ===== LEADER / KETUA KELOMPOK ===== */
+
+.leader {
+  margin: 10px 0 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(245, 199, 106, .38);
+  border-radius: 10px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(245, 199, 106, .12),
+      rgba(139, 124, 255, .08)
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 8px 24px rgba(0,0,0,.18);
+}
+
+.leader span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.leader strong {
+  display: block;
+  color: var(--gold2);
+  font-size: 13px;
+  line-height: 1.25;
+  font-weight: 900;
+  letter-spacing: .02em;
+  overflow-wrap: anywhere;
+}
+
+</style>
 
 </style>
 </head>
@@ -218,9 +258,10 @@ html:fullscreen .footer-note{display:none}
       <h1>GROUP DRAW KGB 2026</h1>
     </div>
     <div class="top-actions">
-      <button class="btn" id="fullBtn">⛶ Fullscreen</button>
-      <button class="btn" id="resetBtn">↻ Reset</button>
-    </div>
+  <button class="btn" id="fullBtn">⛶ Fullscreen</button>
+  <button class="btn" id="saveBtn" disabled>💾 Simpan Hasil</button>
+  <button class="btn" id="resetBtn">↻ Reset</button>
+</div>
   </div>
 
   <section class="hero">
@@ -272,6 +313,7 @@ const $ = id => document.getElementById(id);
 let available = [];
 let assigned = [];
 let counts = Array(GROUPS).fill(0);
+let leaders = Array(GROUPS).fill(null);
 let busy = false;
 
 function targetSize(group) {
@@ -280,10 +322,22 @@ function targetSize(group) {
   return base + (group <= extra ? 1 : 0);
 }
 
+function chooseLeaders() {
+  for (let g = 1; g <= GROUPS; g++) {
+    const members = assigned.filter(x => x.group === g);
+
+    if (members.length) {
+      leaders[g - 1] =
+        members[Math.floor(Math.random() * members.length)];
+    }
+  }
+}
+
 function reset() {
   available = [...participants];
   assigned = [];
   counts = Array(GROUPS).fill(0);
+  leaders = Array(GROUPS).fill(null);
   busy = false;
   document.body.classList.remove("done");
   $("name").textContent = "SIAP UNTUK DIUNDI";
@@ -323,27 +377,55 @@ function render() {
   }
 
   const board = $("board");
-  board.innerHTML = "";
-  for (let g = 1; g <= GROUPS; g++) {
-    const list = assigned.filter(x => x.group === g);
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="card-head">
-        <strong>GROUP ${String(g).padStart(2,"0")}</strong>
-        <span class="badge">${list.length} / ${targetSize(g)} ORANG</span>
-      </div>`;
-    const people = document.createElement("div");
-    people.className = "people";
-    list.forEach(x => {
-      const p = document.createElement("div");
-      p.className = "person";
-      p.textContent = `${String(x.id).padStart(2,"0")} • ${x.name}`;
-      people.appendChild(p);
-    });
-    card.appendChild(people);
-    board.appendChild(card);
+board.innerHTML = "";
+
+for (let g = 1; g <= GROUPS; g++) {
+  const list = assigned.filter(x => x.group === g);
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  card.innerHTML = `
+    <div class="card-head">
+      <strong>GROUP ${String(g).padStart(2,"0")}</strong>
+      <span class="badge">${list.length} / ${targetSize(g)} ORANG</span>
+    </div>
+  `;
+
+  const leader = leaders[g - 1];
+
+  if (leader) {
+    const leaderBox = document.createElement("div");
+    leaderBox.className = "leader";
+
+    const leaderLabel = document.createElement("span");
+    leaderLabel.textContent = "👑 KETUA KELOMPOK";
+
+    const leaderName = document.createElement("strong");
+    leaderName.textContent = leader.name;
+
+    leaderBox.appendChild(leaderLabel);
+    leaderBox.appendChild(leaderName);
+
+    card.appendChild(leaderBox);
   }
+
+  const people = document.createElement("div");
+  people.className = "people";
+
+  list.forEach(x => {
+    if (leader && x.id === leader.id) return;
+
+    const p = document.createElement("div");
+    p.className = "person";
+    p.textContent = x.name;
+
+    people.appendChild(p);
+  });
+
+  card.appendChild(people);
+  board.appendChild(card);
+}
 }
 
 function confetti() {
@@ -399,17 +481,73 @@ function draw() {
         $("group").classList.remove("reveal");
       }, 650);
 
-      busy = false;
-      render();
+busy = false;
 
-      if (!available.length) {
-        document.body.classList.add("done");
-        $("status").textContent = "DRAW COMPLETE";
-        $("hint").textContent = "Semua 68 peserta sudah mendapatkan kelompok.";
-      }
+if (!available.length) {
+    chooseLeaders();
+
+    $("saveBtn").disabled = false;
+
+    document.body.classList.add("done");
+    $("status").textContent = "DRAW COMPLETE";
+    $("hint").textContent = "Semua 68 peserta sudah mendapatkan kelompok.";
+}
+
+render();
+
     }
   }, 85);
 }
+
+function saveResult() {
+  if (assigned.length !== TOTAL) {
+    alert("Undian belum selesai. Selesaikan semua 68 peserta terlebih dahulu.");
+    return;
+  }
+
+  const rows = [
+    ["GROUP", "STATUS", "ID PESERTA", "NAMA PESERTA"]
+  ];
+
+  for (let g = 1; g <= GROUPS; g++) {
+    const leader = leaders[g - 1];
+    const members = assigned.filter(x => x.group === g);
+
+    members.forEach(person => {
+      rows.push([
+        `GROUP ${String(g).padStart(2, "0")}`,
+        leader && person.id === leader.id ? "KETUA" : "ANGGOTA",
+        person.id,
+        person.name
+      ]);
+    });
+  }
+
+  const csv = rows.map(row =>
+    row.map(value =>
+      `"${String(value).replace(/"/g, '""')}"`
+    ).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob(
+    ["\uFEFF" + csv],
+    { type: "text/csv;charset=utf-8;" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "Hasil_Undian_Group_KGB_2026.csv";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+$("saveBtn").addEventListener("click", saveResult);
 
 $("drawBtn").addEventListener("click", draw);
 $("resetBtn").addEventListener("click", () => {
