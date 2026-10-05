@@ -654,7 +654,7 @@ function reset() {
   $("name").textContent = "SIAP UNTUK DIUNDI";
   $("group").textContent = "—";
   $("status").textContent = "READY";
-  $("meta").textContent = `${TOTAL} peserta • 7 kelompok • ;
+  $("meta").textContent = `${TOTAL} peserta • 7 kelompok • pembagian otomatis seimbang`;
   $("hint").textContent = "Tekan tombol di bawah untuk memulai undian.";
   render();
 }
@@ -670,73 +670,93 @@ function pickGroup() {
 function render() {
   $("remaining").textContent = available.length;
   $("drawn").textContent = assigned.length;
-  $("progressText").textContent = `${assigned.length} / ${TOTAL}`;
-  $("progressBar").style.width = `${assigned.length / TOTAL * 100}%`;
-  $("drawBtn").disabled = busy || available.length === 0;
-  $("drawBtn").textContent = available.length ? "🎲 MULAI UNDIAN" : "✓ SEMUA PESERTA SELESAI";
+  $("progressText").textContent = assigned.length + " / " + TOTAL;
+  $("progressBar").style.width = (assigned.length / TOTAL * 100) + "%";
 
+  $("drawBtn").disabled = busy || available.length === 0;
+  $("drawBtn").textContent = available.length
+    ? "🎲 MULAI UNDIAN"
+    : "✓ SEMUA PESERTA SELESAI";
+
+  // =========================
+  // LIVE GROUP PROGRESS
+  // =========================
   const mini = $("groupMini");
   mini.innerHTML = "";
+
   for (let g = 1; g <= GROUPS; g++) {
-    const current = counts[g - 1], target = targetSize(g);
+    const current = counts[g - 1];
+    const target = targetSize(g);
+
     const el = document.createElement("div");
     el.className = "gmini";
-    el.innerHTML = `
-      <div class="head"><span>GROUP ${String(g).padStart(2,"0")}</span><span class="count">${current}/${target}</span></div>
-      <div class="bar"><i style="width:${current/target*100}%"></i></div>`;
+
+    const head = document.createElement("div");
+    head.className = "head";
+
+    const groupName = document.createElement("span");
+    groupName.textContent = "GROUP " + String(g).padStart(2, "0");
+
+    const count = document.createElement("span");
+    count.className = "count";
+    count.textContent = current + "/" + target;
+
+    head.appendChild(groupName);
+    head.appendChild(count);
+
+    const bar = document.createElement("div");
+    bar.className = "bar";
+
+    const barFill = document.createElement("i");
+    barFill.style.width = (current / target * 100) + "%";
+
+    bar.appendChild(barFill);
+    el.appendChild(head);
+    el.appendChild(bar);
     mini.appendChild(el);
   }
 
+  // =========================
+  // GROUP BOARD
+  // =========================
   const board = $("board");
-board.innerHTML = "";
+  board.innerHTML = "";
 
-for (let g = 1; g <= GROUPS; g++) {
-  const list = assigned.filter(x => x.group === g);
+  for (let g = 1; g <= GROUPS; g++) {
+    const list = assigned.filter(function (x) {
+      return x.group === g;
+    });
 
-  const card = document.createElement("div");
-  card.className = "card";
+    const card = document.createElement("div");
+    card.className = "card";
 
-  card.innerHTML = `
-    <div class="card-head">
-      <strong>GROUP ${String(g).padStart(2,"0")}</strong>
-      <span class="badge">${list.length} / ${targetSize(g)} ORANG</span>
-    </div>
-  `;
+    const cardHead = document.createElement("div");
+    cardHead.className = "card-head";
 
-  const leader = leaders[g - 1];
+    const title = document.createElement("strong");
+    title.textContent = "GROUP " + String(g).padStart(2, "0");
 
-  if (leader) {
-    const leaderBox = document.createElement("div");
-    leaderBox.className = "leader";
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = list.length + " / " + targetSize(g) + " ORANG";
 
-    const leaderLabel = document.createElement("span");
-    leaderLabel.textContent = "👑 KETUA KELOMPOK";
+    cardHead.appendChild(title);
+    cardHead.appendChild(badge);
 
-    const leaderName = document.createElement("strong");
-    leaderName.textContent = leader.name;
+    const people = document.createElement("div");
+    people.className = "people";
 
-    leaderBox.appendChild(leaderLabel);
-    leaderBox.appendChild(leaderName);
+    list.forEach(function (x) {
+      const p = document.createElement("div");
+      p.className = "person";
+      p.textContent = String(x.id).padStart(2, "0") + " • " + x.name;
+      people.appendChild(p);
+    });
 
-    card.appendChild(leaderBox);
+    card.appendChild(cardHead);
+    card.appendChild(people);
+    board.appendChild(card);
   }
-
-  const people = document.createElement("div");
-  people.className = "people";
-
-  list.forEach(x => {
-    if (leader && x.id === leader.id) return;
-
-    const p = document.createElement("div");
-    p.className = "person";
-    p.textContent = x.name;
-
-    people.appendChild(p);
-  });
-
-  card.appendChild(people);
-  board.appendChild(card);
-}
 }
 
 function confetti() {
