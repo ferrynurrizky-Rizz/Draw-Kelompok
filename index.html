@@ -617,8 +617,29 @@ html:fullscreen .results{flex-basis:30vh}
 
 <script>
 const participants = [{"id":1,"name":"NEVYRA AYUNI BIKHAIRI"},{"id":2,"name":"GEEBYLLA RAGGY"},{"id":3,"name":"ARIEF AFFANDI"},{"id":4,"name":"ERICK SUSANTO"},{"id":5,"name":"FREDDY FRANZ"},{"id":6,"name":"KENNY MANUEL"},{"id":7,"name":"FLORENCIA WIDYASTRI"},{"id":8,"name":"ARISTA KRESNAJATI SURWIYANTA"},{"id":9,"name":"HESTI PUTRI KEN RISTRI"},{"id":10,"name":"REBEKA SAPUTRI"},{"id":11,"name":"AHMAD FERRY NUR RIZKI"},{"id":12,"name":"ANGGIT CAHYO PERMONO"},{"id":13,"name":"HANA SUKMA ANDERA"},{"id":14,"name":"KRISNA SETIAWAN"},{"id":15,"name":"LUSI WAHYUNI"},{"id":16,"name":"MANDRA BHAWAWIGUNA"},{"id":17,"name":"MIA FEBRIYANI"},{"id":18,"name":"BRIANTO WIJAYA"},{"id":19,"name":"SHAFIRNA UTAMI"},{"id":39,"name":"OCKY DWI ADITYA"},{"id":40,"name":"MUALINADYA PARAMITA"},{"id":41,"name":"IRMA YUDHA ARIANDINI"},{"id":42,"name":"RIDWAH BAIHAKI ANANDAR"},{"id":43,"name":"ANNISA AVRILIYANTI"},{"id":44,"name":"MUHAMMAD GHOZI AL FATIH"},{"id":45,"name":"ANISA FAUZIAH (Adm TWC)"},{"id":46,"name":"SONYA MAVI OLA"},{"id":21,"name":"MUHAMMAD SUDI ANGGORO SAPUTRO"},{"id":23,"name":"SUHERMAN"},{"id":24,"name":"MULYADI"},{"id":25,"name":"ARI MAULANA"},{"id":26,"name":"ABDUL AZIS"},{"id":20,"name":"WIDI WILLIAM"},{"id":22,"name":"DEDEH KURNIASIH"},{"id":27,"name":"BELLA PRAMESWARI PUTRI DJAELANI"},{"id":33,"name":"MOH NASRULLAH ZAKARIA"},{"id":34,"name":"GATOT SUPRIYADI"},{"id":35,"name":"HASTO CAHYO PRASETYO"},{"id":36,"name":"RESSA RIZKY RAMDHANI"},{"id":37,"name":"MUHAMMAD MAHFUD"},{"id":38,"name":"MISTIKA OKTAVIANI"},{"id":28,"name":"TAZKIA NADIA"},{"id":29,"name":"MUHAMMAD RIDHWAN RIADY"},{"id":30,"name":"PUTERA SEMITOA DASALAM BARDHANY"},{"id":31,"name":"ALIFIA BAHAR"},{"id":32,"name":"JESSICA ALVINA MULIAWAN"},{"id":47,"name":"RICHY DANIEL PANGARIBUAN"},{"id":48,"name":"SIGIT WAHYUDIYANTO"},{"id":49,"name":"WILDAN FAHMI"},{"id":50,"name":"HANS LEONARDO"},{"id":51,"name":"PANDU RADIAN RAFIUDIN"},{"id":52,"name":"FAJRI ZULKARNAINI"},{"id":53,"name":"VINKA ZAIN"},{"id":54,"name":"ANGGITA MURDIANINGSIH"},{"id":55,"name":"YENI CHAERUNISAH"},{"id":56,"name":"ALVIRA SAFITRI"},{"id":57,"name":"REYNOVASI"},{"id":58,"name":"EKO PRASTIYO"},{"id":59,"name":"NUR USWATUN HASANAH"},{"id":60,"name":"KEZIA ROSANA"},{"id":61,"name":"DITA WULANDARI"},{"id":62,"name":"RAYHAN SHUHADA"},{"id":63,"name":"LUSIYANTI"},{"id":64,"name":"ADE AYU SARI"},{"id":65,"name":"BEBY REGILYA SAFITRI"},{"id":66,"name":"ANTONIA DEVANI CHRISTIANA ANGELI"},{"id":67,"name":"ANNA PUSPITASARI"},{"id":68,"name":"SAFIRA NURVIANI"}];
+const EXCLUDED_NAMES = new Set([
+  "GEEBYLLA RAGGY",
+  "HESTI PUTRI KEN RISTRI",
+  "AHMAD FERRY NUR RIZKI",
+  "BRIANTO WIJAYA",
+  "SHAFIRNA UTAMI",
+  "RIDWAH BAIHAKI ANANDAR",
+  "MUHAMMAD SUDI ANGGORO SAPUTRO",
+  "SUHERMAN",
+  "MULYADI",
+  "BELLA PRAMESWARI PUTRI DJAELANI",
+  "MUHAMMAD MAHFUD",
+  "GATOT SUPRIYADI",
+  "PUTERA SEMITOA DASALAM BARDHANY",
+  "ALIFIA BAHAR"
+]);
+
+const ELIGIBLE_PARTICIPANTS = participants.filter(
+  person => !EXCLUDED_NAMES.has(person.name)
+);
+
 const GROUPS = 7;
-const TOTAL = participants.length;
+const TOTAL = ELIGIBLE_PARTICIPANTS.length;
 
 const $ = id => document.getElementById(id);
 let available = [];
@@ -645,7 +666,7 @@ function chooseLeaders() {
 }
 
 function reset() {
-  available = [...participants];
+  available = [...ELIGIBLE_PARTICIPANTS];
   assigned = [];
   counts = Array(GROUPS).fill(0);
   leaders = Array(GROUPS).fill(null);
@@ -749,7 +770,7 @@ function render() {
     list.forEach(function (x) {
       const p = document.createElement("div");
       p.className = "person";
-      p.textContent = String(x.id).padStart(2, "0") + " • " + x.name;
+      p.textContent = x.name;
       people.appendChild(p);
     });
 
